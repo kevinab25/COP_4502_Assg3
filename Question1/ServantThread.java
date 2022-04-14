@@ -1,37 +1,41 @@
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 
+import javax.print.attribute.standard.NumberOfInterveningJobs;
+
 public class ServantThread implements Runnable {
 	
-	private LinkedList<Gift> unordered = new LinkedList<Gift>();
-	private LinkedList<Gift> ordered = new LinkedList<Gift>();
+	private LazyList<Integer> unordered = new LazyList<>();
+	private LazyList<Integer> ordered = new LazyList<>();
 	private Semaphore semaphore;
-	private int part;
+	private int numGifts;
 
-	public ServantThread(LinkedList<Gift> unordered , LinkedList<Gift> ordered , Semaphore sem , int part) {
+	public ServantThread(LazyList<Integer> unordered , LazyList<Integer> ordered ,Semaphore sem, int numGifts) {
 		this.ordered = ordered;
 		this.unordered = unordered;
 		semaphore = sem;
-		this.part = part;
+		this.numGifts = numGifts;
 	}
 
 	@Override
 	public void run() {
-		try {
-			semaphore.acquire();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		// try {
+		// 	// semaphore.acquire();
+		// } catch (InterruptedException e) {
+		// 	e.printStackTrace();
+		// }
 		
-		for(int i = 0 ; i < part ; i++ ) {
-			ordered.add(unordered.pop());
+		for(int i = 0 ; i < numGifts ; i++ ) {
+			ordered.add(i);
+			unordered.remove(i);
 		}
 
-		for(int i = 0 ; i < part ; i++) {
-			System.out.println("ThankYou note for Gift " + ordered.pop().getTag() + " sent!");
+		for(int i = 0 ; i < numGifts ; i++) {
+			ordered.remove(i);
+			System.out.println("ThankYou note for Gift " + i + " sent!");
 		}
 
-		semaphore.release();
+		// semaphore.release();
 
 	}
 

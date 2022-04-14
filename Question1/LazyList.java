@@ -80,11 +80,15 @@ public class LazyList<T extends Comparable<T>> {
         return curr.key == key && !curr.marked;
     }
 
-    private boolean validate(Node pred, Node curr) {
-        return !pred.marked && !curr.marked && pred.next == curr;
+    public Node getHead() {
+        return head;
     }
 
-    private boolean validateAndReplace(Node<T> pred, Node<T> curr) {
-        return !pred.marked && !curr.marked && pred.next == curr && !pred.tagged && !curr.tagged;
+    public Node getTail() {
+        return head.next;
+    }
+
+    private boolean validate(Node pred, Node curr) {
+        return !pred.marked && !curr.marked && pred.next == curr;
     }
 }

@@ -1,37 +1,42 @@
+
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.Semaphore;
 
 public class Main {
 	
-	public static void printList(LinkedList<Gift> list) {		
-		if(list.isEmpty()) {
-			System.out.println("List Empty");
-			return;
+	public static void printList(LazyList<Integer> list) {	
+		if(list.getHead().key == Integer.MIN_VALUE && list.getTail().key == Integer.MAX_VALUE) {
+			System.out.println("List is empty");
+		} else{
+			System.out.println("Oh noooooo");
 		}
-		
-		for(Gift i : list )
-			System.out.println("Gift :" +  i.getTag());
 	}
 
 	public static void main(String[] args) {
-		int numGifts = 500000;
+		int numGifts = 50000;
 		int numThreads = 4;
 		int part = numGifts/numThreads;
 		
-		LinkedList<Gift> unordered = new LinkedList<Gift>();
-		LinkedList<Gift> ordered = new LinkedList<Gift>();
+		LazyList<Integer> unordered = new LazyList<Integer>();
+		LazyList<Integer> ordered = new LazyList<Integer>();
+		LinkedList<Integer> list = new LinkedList<>();
 		
 		// Adding gifts in unOrdered list
 		for(int i = 0 ; i < numGifts ; i++) {
-			Gift gift = new Gift();
-			unordered.add(gift);
+			list.add(i);
 		}
+		Collections.shuffle(list);
+		for(Integer num: list)
+			unordered.add(num);
 		
 		Semaphore sem = new Semaphore(1);
 		Thread servantThreads[] = new Thread[numThreads];
 		ServantThread servants[] = new ServantThread[numThreads];
 		for(int i = 0 ; i < numThreads  ; i++ ) {
-			servants[i] = new ServantThread(unordered , ordered , sem , part);
+			servants[i] = new ServantThread(unordered, ordered, sem, numGifts);
 			servantThreads[i] = new Thread(servants[i]);
 			servantThreads[i].start();
 		}
@@ -44,10 +49,9 @@ public class Main {
 			}
 		}
 		
-		
-		System.out.println("Ordered List : ");
+		System.out.print("Ordered List : ");
 		printList(ordered);
-		System.out.println("unOrdered List : ");
+		System.out.print("unOrdered List : ");
 		printList(unordered);
 		
 	}
