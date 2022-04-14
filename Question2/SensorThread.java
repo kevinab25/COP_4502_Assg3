@@ -1,14 +1,12 @@
-package q2;
-
 import java.util.LinkedList;
 import java.util.Random;
 
 public class SensorThread implements Runnable {
 
-	private LinkedList<Integer> sharedData = new LinkedList<Integer>();
+	private LazyList<Integer> sharedData = new LazyList<Integer>();
 	private int timeInterval = 60;
 
-	public SensorThread(LinkedList<Integer> sharedData) {
+	public SensorThread(LazyList<Integer> sharedData) {
 		this.sharedData = sharedData;
 	}
 
